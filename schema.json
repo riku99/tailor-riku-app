@@ -1,0 +1,900 @@
+{
+  "name": "tailordb",
+  "tables": [
+    {
+      "name": "Member",
+      "type": "table",
+      "comment": "Member of the workspace",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "comment": "Name of the member"
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "nullable": false,
+          "comment": "Role of the member"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "nullable": false,
+          "comment": "Email address of the member"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Member",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Member",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": []
+    },
+    {
+      "name": "Task",
+      "type": "table",
+      "comment": "Task item in a project",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "nullable": false,
+          "comment": "Title of the task"
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "nullable": false,
+          "comment": "Current status of the task"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "projectID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Project this task belongs to"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        },
+        {
+          "name": "assigneeID",
+          "type": "uuid",
+          "nullable": true,
+          "comment": "Member assigned to this task"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "nullable": true,
+          "comment": "Detailed description of the task"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Task",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Task",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_Task_projectID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "Task",
+          "columns": [
+            "projectID"
+          ],
+          "referenced_table": "Project",
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_Task_assigneeID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "Task",
+          "columns": [
+            "assigneeID"
+          ],
+          "referenced_table": "Member",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Project",
+        "Member"
+      ]
+    },
+    {
+      "name": "Project",
+      "type": "table",
+      "comment": "Project under a team",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "comment": "Name of the project"
+        },
+        {
+          "name": "teamID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Team that owns this project"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Project",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Project",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_Project_teamID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "Project",
+          "columns": [
+            "teamID"
+          ],
+          "referenced_table": "Team",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Team"
+      ]
+    },
+    {
+      "name": "TeamMember",
+      "type": "table",
+      "comment": "Membership of a member in a team with role",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        },
+        {
+          "name": "role",
+          "type": "enum",
+          "nullable": false,
+          "comment": "Role of the member in the team"
+        },
+        {
+          "name": "teamID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Team ID"
+        },
+        {
+          "name": "memberID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Member ID"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_TeamMember",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "TeamMember",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_TeamMember_teamID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "TeamMember",
+          "columns": [
+            "teamID"
+          ],
+          "referenced_table": "Team",
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_TeamMember_memberID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "TeamMember",
+          "columns": [
+            "memberID"
+          ],
+          "referenced_table": "Member",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Team",
+        "Member"
+      ]
+    },
+    {
+      "name": "Team",
+      "type": "table",
+      "comment": "Team that groups projects and members",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "comment": "Name of the team"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "nullable": true,
+          "comment": "Optional description of the team"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Team",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Team",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": []
+    },
+    {
+      "name": "Client",
+      "type": "table",
+      "comment": "Client organization",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "comment": "Client name"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "nullable": false,
+          "comment": "Country where the client is located"
+        },
+        {
+          "name": "industry",
+          "type": "enum",
+          "nullable": true,
+          "comment": "Industry of the client"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        },
+        {
+          "name": "annualRevenue",
+          "type": "float",
+          "nullable": true,
+          "comment": "Annual revenue in USD"
+        },
+        {
+          "name": "employeeCount",
+          "type": "integer",
+          "nullable": true,
+          "comment": "Number of employees"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Client",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Client",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": []
+    },
+    {
+      "name": "TimeEntry",
+      "type": "table",
+      "comment": "Time tracking entry for a task",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "date",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Date of the work"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "nullable": true,
+          "comment": "Optional note for this entry"
+        },
+        {
+          "name": "hours",
+          "type": "float",
+          "nullable": false,
+          "comment": "Number of hours worked"
+        },
+        {
+          "name": "taskID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Task this time entry is linked to"
+        },
+        {
+          "name": "memberID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Member who logged this time"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_TimeEntry",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "TimeEntry",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_TimeEntry_taskID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "TimeEntry",
+          "columns": [
+            "taskID"
+          ],
+          "referenced_table": "Task",
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_TimeEntry_memberID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "TimeEntry",
+          "columns": [
+            "memberID"
+          ],
+          "referenced_table": "Member",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Task",
+        "Member"
+      ]
+    },
+    {
+      "name": "Document",
+      "type": "table",
+      "comment": "Project document with attachments",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "attachedFiles",
+          "type": "nested[]",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "nullable": false,
+          "comment": "Document title"
+        },
+        {
+          "name": "category",
+          "type": "enum",
+          "nullable": false,
+          "comment": "Document category"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "projectID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Project this document belongs to"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_Document",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "Document",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_Document_projectID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "Document",
+          "columns": [
+            "projectID"
+          ],
+          "referenced_table": "Project",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Project"
+      ]
+    },
+    {
+      "name": "ProjectBudget",
+      "type": "table",
+      "comment": "Budget information for a project",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "comment": ""
+        },
+        {
+          "name": "currency",
+          "type": "enum",
+          "nullable": false,
+          "comment": "Currency of the budget"
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "nullable": false,
+          "comment": "Record creation timestamp"
+        },
+        {
+          "name": "projectID",
+          "type": "uuid",
+          "nullable": false,
+          "comment": "Project this budget belongs to"
+        },
+        {
+          "name": "updatedAt",
+          "type": "datetime",
+          "nullable": true,
+          "comment": "Record last update timestamp"
+        },
+        {
+          "name": "actualCost",
+          "type": "float",
+          "nullable": true,
+          "comment": "Actual cost spent in USD"
+        },
+        {
+          "name": "plannedBudget",
+          "type": "float",
+          "nullable": false,
+          "comment": "Planned budget amount in USD"
+        },
+        {
+          "name": "clientID",
+          "type": "uuid",
+          "nullable": true,
+          "comment": "Client that requested the project"
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "pk_ProjectBudget",
+          "type": "PRIMARY KEY",
+          "def": "",
+          "table": "ProjectBudget",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_ProjectBudget_projectID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "ProjectBudget",
+          "columns": [
+            "projectID"
+          ],
+          "referenced_table": "Project",
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "fk_ProjectBudget_clientID",
+          "type": "FOREIGN KEY",
+          "def": "",
+          "table": "ProjectBudget",
+          "columns": [
+            "clientID"
+          ],
+          "referenced_table": "Client",
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "triggers": [],
+      "def": "",
+      "referenced_tables": [
+        "Project",
+        "Client"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "Task",
+      "columns": [
+        "projectID"
+      ],
+      "parent_table": "Project",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "Task",
+      "columns": [
+        "assigneeID"
+      ],
+      "parent_table": "Member",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "zero_or_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "Project",
+      "columns": [
+        "teamID"
+      ],
+      "parent_table": "Team",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "TeamMember",
+      "columns": [
+        "teamID"
+      ],
+      "parent_table": "Team",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "TeamMember",
+      "columns": [
+        "memberID"
+      ],
+      "parent_table": "Member",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "TimeEntry",
+      "columns": [
+        "taskID"
+      ],
+      "parent_table": "Task",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "TimeEntry",
+      "columns": [
+        "memberID"
+      ],
+      "parent_table": "Member",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "Document",
+      "columns": [
+        "projectID"
+      ],
+      "parent_table": "Project",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "ProjectBudget",
+      "columns": [
+        "projectID"
+      ],
+      "parent_table": "Project",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "exactly_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    },
+    {
+      "table": "ProjectBudget",
+      "columns": [
+        "clientID"
+      ],
+      "parent_table": "Client",
+      "parent_columns": [
+        "id"
+      ],
+      "cardinality": "zero_or_one",
+      "parent_cardinality": "zero_or_more",
+      "def": ""
+    }
+  ],
+  "enums": [
+    {
+      "name": "Member_role",
+      "values": [
+        "ADMIN",
+        "MEMBER",
+        "VIEWER"
+      ]
+    },
+    {
+      "name": "Task_status",
+      "values": [
+        "TODO",
+        "IN_PROGRESS",
+        "DONE"
+      ]
+    },
+    {
+      "name": "TeamMember_role",
+      "values": [
+        "ADMIN",
+        "MEMBER",
+        "VIEWER"
+      ]
+    },
+    {
+      "name": "Client_industry",
+      "values": [
+        "IT",
+        "Finance",
+        "Retail",
+        "Manufacturing",
+        "Other"
+      ]
+    },
+    {
+      "name": "Document_category",
+      "values": [
+        "SPEC",
+        "REPORT",
+        "CONTRACT",
+        "OTHER"
+      ]
+    },
+    {
+      "name": "ProjectBudget_currency",
+      "values": [
+        "USD",
+        "EUR",
+        "JPY"
+      ]
+    }
+  ]
+}

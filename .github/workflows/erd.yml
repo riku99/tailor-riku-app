@@ -1,0 +1,40 @@
+name: ERD Build
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-erd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply Tailor configuration
+        run: pnpm tailor-sdk apply
+        env:
+          TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
+          TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
+
+      - name: Export ERD from TailorDB
+        run: pnpm tailor-sdk tailordb erd export
+        env:
+          TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
+          TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
+
+      - name: Deploy ERD static website
+        run: pnpm tailor-sdk staticwebsite deploy -n erd -d dist
+        env:
+          TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
+          TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
