@@ -3,7 +3,7 @@ import { db } from "@tailor-platform/sdk";
 export const client = db.type("Client", "Client organization", {
   name: db.string().description("Client name"),
   industry: db
-    .enum(["IT", "Finance", "Retail", "Manufacturing", "Other"], {
+    .enum(["it", "Finance", "Retail", "Manufacturing", "Other"], {
       optional: true,
     })
     .description("Industry of the client"),
