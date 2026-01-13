@@ -8,6 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        name: Checkout app repository
+
+      - name: Checkout SDK repository (feat/liam-erd)
+        uses: actions/checkout@v4
+        with:
+          repository: tailor-platform/sdk
+          ref: feat/liam-erd
+          path: tailor-sdk
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -18,23 +27,29 @@ jobs:
           node-version: 22
           cache: pnpm
 
+      - name: Install SDK dependencies and build CLI
+        working-directory: ./tailor-sdk
+        run: |
+          pnpm install
+          pnpm --filter @tailor-platform/sdk build
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Apply Tailor configuration
-        run: pnpm tailor-sdk apply
+        run: node ./tailor-sdk/packages/sdk/dist/cli/index.mjs apply
         env:
           TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
           TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
 
       - name: Export ERD from TailorDB
-        run: pnpm tailor-sdk tailordb erd export
+        run: node ./tailor-sdk/packages/sdk/dist/cli/index.mjs tailordb erd export
         env:
           TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
           TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
 
       - name: Deploy ERD static website
-        run: pnpm tailor-sdk staticwebsite deploy -n erd -d dist
+        run: node ./tailor-sdk/packages/sdk/dist/cli/index.mjs staticwebsite deploy -n erd -d dist
         env:
           TAILOR_PLATFORM_WORKSPACE_ID: ${{ secrets.TAILOR_PLATFORM_WORKSPACE_ID }}
           TAILOR_PLATFORM_TOKEN: ${{ secrets.TAILOR_PLATFORM_TOKEN }}
